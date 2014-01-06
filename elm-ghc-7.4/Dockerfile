@@ -1,7 +1,7 @@
 # GHC 7.4.2 base image for compiling Elm
 # Using Haskell Platform 2012.2.0
 
-FROM ubuntu:12.10
+FROM stackbrew/ubuntu:12.10
 
 MAINTAINER Mads Flensted-Urech <mfu@coadu.com>
 
