@@ -11,17 +11,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :virtualbox do |vb, override|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
   end
-
-  config.vm.provision "docker"
 
   config.vm.synced_folder "./", "/home/vagrant/elm-docker"
 
-end
+  config.vm.provision "docker"
 
-# Untill kicked off by Vagrant:
-# vagrant up 
-# vagrant ssh
-#   cd elm-docker
-#   ./build-containers.sh
+  config.vm.provision "shell",
+        inline: "cd /home/vagrant/elm-docker && ./build-containers.sh"
+
+end
