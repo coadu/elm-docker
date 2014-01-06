@@ -11,6 +11,8 @@
 vagrant plugin install vagrant-vbguest
 ```
 
+Note: some Gb of disk and RAM are also required to get this to run.
+
 ## Setup containers
 
 ```shell
