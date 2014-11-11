@@ -1,20 +1,16 @@
-UBUNTU_VERSION=13.10
-GHC=ghc-7.6
+GHC=7.8
 MAINTAINER="Mads Flensted-Urech, Coadu.com"
-MAINT=mfu
+MAINT=coadu
 
 cat > Dockerfile << EOF1
-FROM stackbrew/ubuntu:$UBUNTU_VERSION
+FROM stackbrew/haskell:$GHC
 
 MAINTAINER $MAINTAINER
 
-RUN  echo 'deb http://archive.ubuntu.com/ubuntu saucy main universe' > /etc/apt/sources.list
-RUN  apt-get update
-RUN  apt-get install -y haskell-platform git wget
 RUN  cabal update
 EOF1
 
-IMAGE=$MAINT/elm-$GHC
+IMAGE=$MAINT/elm-ghc-$GHC
 docker build -t $IMAGE .
 
 cat > Dockerfile << EOF2
@@ -22,22 +18,20 @@ FROM $IMAGE
 
 MAINTAINER $MAINTAINER
 
-RUN  git clone https://github.com/evancz/Elm /usr/src/Elm/
+RUN  wget https://raw.githubusercontent.com/elm-lang/elm-platform/master/src/BuildFromSource.hs
 EOF2
 
-IMAGE=$MAINT/elm-src-$GHC
+IMAGE=$MAINT/elm-src-ghc-$GHC
 docker build -t $IMAGE .
 
+BRANCH=0.13
 cat > Dockerfile << EOF3
 FROM $IMAGE
 
 MAINTAINER $MAINTAINER
 
-ADD build-elm.sh /usr/src/Elm/build-elm.sh
-RUN /bin/bash -c "cd /usr/src/Elm && ./build-elm.sh"
+RUN /bin/bash -c "cd /usr/src && runhaskell BuildFromSource.hs $BRANCH"
 EOF3
 
-BRANCH=master
-IMAGE=$MAINT/elm-$BRANCH-$GHC
+IMAGE=$MAINT/elm-$BRANCH-ghc-$GHC
 docker build -t $IMAGE .
-
